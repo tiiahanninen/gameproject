@@ -11,30 +11,30 @@ let lastTime = 0;
 let enemies = [];
 class Enemy {
     constructor(){
-        this.spriteWidth = 271; /* size of the enemy */
-        this.spriteHeight = 194; /* size of the enemy */
-        this.sizeModifier = Math.random() * 0.6 + 0.4;
+        this.spriteWidth = 60; /* area from the sprite sheet that we want visible - sprite sheet/wanted amount of frames(in this case flies) */
+        this.spriteHeight = 44; /* area from the sprite sheet that is wanted visible */
+        this.sizeModifier = Math.random() * 1.2 + 0.9; /*size of the enemies varies */
         this.width = this.spriteWidth * this.sizeModifier;
         this.height = this.spriteHeight * this.sizeModifier;
         this.x = canvas.width;
-        this.y = Math.random() * (canvas.height - this.height); /* sets the enemies to fly in random patterns within the canvas */ 
+        this.y = Math.random() * (canvas.height - this.height);  
         this.directionX = Math.random() * 5 + 3; /* making the enemies to move on the X axel */
-        this.directionY = Math.random() * 5 - 2.5; /* making the enemies to move on the Y axel */
+        this.directionY = Math.random() * 5 - 2.5; /* making the enemies spawn from different places on Y axel */
         this.markedForDelete = false; 
         this.image = new Image();
         this.image.src = 'enemy.png';
-        this.frame = 0;
-        this.maxFrame = 4;
+        this.frame = 0; /*animation/frames start from the first fly */
+        this.maxFrame = 5; /*last frame is the fly number 6  */
     }
     update(){
         this.x -= this.directionX;
         if (this.x <0 - this.width) this.markedForDelete = true; /*HUOM VIDEOSSA "markedForDeletion" - Deletes the enemies that reach the left edge */
-        if (this.frame > this.maxFrame) this.drame = 0;
-        else this.frame++;
+        if (this.frame > this.maxFrame) this.frame = 0; /* returns the animation to the frame 1 */
+        else this.frame++; /*loops the frames, creates the flapping animation*/
     }
     draw(){
         ctx.strokeRect(this.x, this.y, this.width, this.height); /*rectangle as the enemy */
-        ctx.drawImage(this.image, this.frame * this.spriteWidth, 0, this.spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height); /*makes the fly flap its wings (=images to change) */
+        ctx.drawImage(this.image, this.spriteWidth * this.frame, 0, this.spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height); /* cuts the images from the sheet  */
     }
 }
 
@@ -50,7 +50,7 @@ function animation(timestamp) {
         enemies.push(new Enemy());
         timeToNextEnemy = 0;
     };
-    [...enemies].forEach(object => object.update()); /*cycles trough the enemies array and triggers update */
+    [...enemies].forEach(object => object.update(deltatime)); /*cycles trough the enemies array and triggers update */
     [...enemies].forEach(object => object.draw()); /* makes multiple enemies appear at the same time */
     enemies = enemies.filter(object => !object.markedForDelete); /*HUOM VIDEOSSA "markedForDeletion" */
     requestAnimationFrame(animation);
