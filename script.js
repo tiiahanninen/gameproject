@@ -13,8 +13,9 @@ let gameOver = false;
 ctx.font = '50px Impact';
 
 let timeToNextEnemy = 0;
-let enemyInterval = 500;
+let enemyInterval = 1000;
 let lastTime = 0;
+
 
 /* creating the enemies */
 let enemies = [];
@@ -22,13 +23,13 @@ class Enemy {
     constructor(){
         this.spriteWidth = 60; /* area from the sprite sheet that we want visible - sprite sheet/wanted amount of frames(in this case flies) */
         this.spriteHeight = 44; /* area from the sprite sheet that is wanted visible */
-        this.sizeModifier = Math.random() * 1.2 + 0.9; /*size of the enemies varies */
+        this.sizeModifier = Math.random() * 1.7 + 0.9; /*size of the enemies varies */
         this.width = this.spriteWidth * this.sizeModifier;
         this.height = this.spriteHeight * this.sizeModifier;
         this.x = canvas.width;
         this.y = Math.random() * (canvas.height - this.height);  
-        this.directionX = Math.random() * 5 + 3; /* making the enemies to move on the X axel */
-        this.directionY = Math.random() * 5 - 2.5; /* making the enemies spawn from different places on Y axel */
+        this.directionX = Math.random() * 2 + 1; /* making the enemies to move on the X axel */
+        this.directionY = Math.random() * 6 - 2.0; /* making the enemies spawn from different places on Y axel */
         this.markedForDelete = false; 
         this.image = new Image();
         this.image.src = 'enemy.png';
@@ -46,18 +47,24 @@ class Enemy {
         } /* disables "disappering" from screen, when enemy hits top/low part of screen makes new route*/
         this.x -= this.directionX;
         this.y += this.directionY; /* enables vertival movement*/
-        if (this.x <0 - this.width) this.markedForDelete = true; /*HUOM VIDEOSSA "markedForDeletion" - Deletes the enemies that reach the left edge */
+        if (this.x <0 - this.width) {
+            this.markedForDelete = true; /*HUOM VIDEOSSA "markedForDeletion" - Deletes the enemies that reach the left edge */
+        }
         this.timeSinceFlap += deltatime;
         if (this.timeSinceFlap > this.flapInterval) {
-            if (this.frame > this.maxFrame) this.frame = 0; /* returns the animation to the frame 1 */
-            else this.frame++; /*loops the frames, creates the flapping animation*/
+            if (this.frame >= this.maxFrame) {
+                this.frame = 0; /* returns the animation to the frame 1 */
+            }
+            else {
+                this.frame++; /*loops the frames, creates the flapping animation*/
+            }
             this.timeSinceFlap = 0;
         }
         if (this.x < 0 - this.width) gameOver = true;
     }
     draw(){
         impactCtx.fillStyle = this.color;
-        impactCtx.fillRect(this.x, this.y, this.width, this.height); /*rectangle as the enemy */
+        impactCtx.fillRect(this.x, this.y, this.width, this.height);
         ctx.drawImage(this.image, this.spriteWidth * this.frame, 0, this.spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height); /* cuts the images from the sheet  */
     }
 }
@@ -79,9 +86,11 @@ class Explosion { /* creates blueprint for ~ explosions ~*/
         this.markedForDelete = false; //HUOM videossa markedForDeletion
     }
     update(deltatime){   /* this function enables right timing for effect*/
-        if (this.frame === 0) this.sound.play();
+        if (this.frame === 0) {
+            this.sound.play();
+        }
         this.timeSinceLastFrame += deltatime;
-        if (this.timeSinceLastFrame > this.frameInterval){
+        if (this.timeSinceLastFrame > this.frameInterval) {
             this.frame++;
             if (this.frame > 5) this.markedForDelete = true;
         }
@@ -97,9 +106,9 @@ const enemy = new Enemy();
 
 function drawScore(){
     ctx.fillStyle = 'black';
-    ctx.fillText('Score; ' + score, 50, 75);
+    ctx.fillText('Score: ' + score, 50, 75);
     ctx.fillStyle = 'white';
-    ctx.fillText('Score; ' + score, 55, 80);
+    ctx.fillText('Score: ' + score, 55, 80);
 }
 function drawGameOver(){
     ctx.textAlign = 'center';
@@ -136,14 +145,19 @@ function animation(timestamp) {
         enemies.sort(function(a, b) {
             return a.width - b.width;
         }); /* sorts enemies; smaller ones are behind biggers so it makes illusion of depth*/
+        timeToNextEnemy = 0; // Reset timeToNextEnemy
     }
     drawScore();
     [...enemies, ...explosions].forEach(object => object.update(deltatime)); /*cycles trough the enemies array and triggers update */
     [...enemies, ...explosions].forEach(object => object.draw()); /* makes multiple enemies appear at the same time */
     enemies = enemies.filter(object => !object.markedForDelete); /*HUOM VIDEOSSA "markedForDeletion" */
     explosions = explosions.filter(object => !object.markedForDelete);
-    if (!gameOver) requestAnimationFrame(animation);
-    else drawGameOver();
+    if (!gameOver) {
+        requestAnimationFrame(animation);
+    }
+    else {
+        drawGameOver();
+    }
 }
 animation(0); /* 0 to give a starting value for the timestamp so it works together with deltatime */
 
