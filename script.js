@@ -1,7 +1,14 @@
 const canvas = document.getElementById('canvas1');
 const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+const CANVAS_WIDTH = canvas.width = window.innerWidth;
+const CANVAS_HEIGHT = canvas.height = window.innerHeight;
+let gameSpeed = 1;
+
+const backgroundLayer = new Image();
+backgroundLayer.src = 'bglayer1.jpg';
+
+// Background layers positions
+let backgroundLayerX = 0;
 
 const impactCanvas = document.getElementById('impactCanvas'); /* in video collisionCanvas*/
 const impactCtx = impactCanvas.getContext('2d'); /* in video "collisionCtx"*/
@@ -15,6 +22,25 @@ ctx.font = '50px Impact';
 let timeToNextEnemy = 0;
 let enemyInterval = 1000;
 let lastTime = 0;
+
+let x = 0;
+
+/*setting the background */
+function drawBackground() {
+    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    ctx.drawImage(backgroundLayer, backgroundLayerX, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    if (backgroundLayerX <= -CANVAS_WIDTH) {
+        backgroundLayerX = 0; 
+    }
+}
+
+function updateBackground() {
+    backgroundLayerX -= gameSpeed * 0.3; 
+    // Wrap around background layers
+    if (backgroundLayerX <= -backgroundLayer) {
+        backgroundLayerX = CANVAS_WIDTH % CANVAS_WIDTH;
+    }
+}
 
 
 /* creating the enemies */
@@ -134,9 +160,15 @@ window.addEventListener('click', function(e) {
 });
 
 /* HUOM VIDEOSSA "animate"! - animation loop using deltatime: */ 
+
+
+
 function animation(timestamp) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    impactCtx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);;
+    impactCtx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    updateBackground();
+    drawBackground();
+
     let deltatime = timestamp - lastTime;
     lastTime = timestamp;
     timeToNextEnemy += deltatime;
@@ -146,6 +178,7 @@ function animation(timestamp) {
             return a.width - b.width;
         }); /* sorts enemies; smaller ones are behind biggers so it makes illusion of depth*/
         timeToNextEnemy = 0; // Reset timeToNextEnemy
+
     }
     drawScore();
     [...enemies, ...explosions].forEach(object => object.update(deltatime)); /*cycles trough the enemies array and triggers update */
