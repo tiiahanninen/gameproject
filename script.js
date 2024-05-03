@@ -29,16 +29,14 @@ let x = 0;
 function drawBackground() {
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     ctx.drawImage(backgroundLayer, backgroundLayerX, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    if (backgroundLayerX <= -CANVAS_WIDTH) {
-        backgroundLayerX = 0; 
-    }
+    ctx.drawImage(backgroundLayer, backgroundLayerX + CANVAS_WIDTH, 0, CANVAS_WIDTH, CANVAS_HEIGHT); /* draws background again to fill remaining space/ in case of wider screen*/
 }
 
 function updateBackground() {
     backgroundLayerX -= gameSpeed * 0.3; 
-    // Wrap around background layers
-    if (backgroundLayerX <= -backgroundLayer) {
-        backgroundLayerX = CANVAS_WIDTH % CANVAS_WIDTH;
+    /* resets backgrounds position to create loop */
+    if (backgroundLayerX <= -CANVAS_WIDTH) {
+        backgroundLayerX = 0;
     }
 }
 
