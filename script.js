@@ -10,8 +10,8 @@ backgroundLayer.src = 'bglayer1.jpg';
 // Background layers positions
 let backgroundLayerX = 0;
 
-const impactCanvas = document.getElementById('impactCanvas'); /* in video collisionCanvas*/
-const impactCtx = impactCanvas.getContext('2d'); /* in video "collisionCtx"*/
+const impactCanvas = document.getElementById('impactCanvas');
+const impactCtx = impactCanvas.getContext('2d');
 impactCanvas.width = window.innerWidth;
 impactCanvas.height = window.innerHeight;
 
@@ -65,14 +65,14 @@ class Enemy {
         this.color = 'rgb(' + this.randomColors[0] + ',' + this.randomColors[1] + ',' + this.randomColors[2] + ')';
         this.hasTrail = Math.random() > 0.5;
     }
-    update(deltatime){ /* with deltatime adjust the speed of wings, deltatime is dependent on the power of computer*/
+    update(deltatime){ /* with deltatime adjust the speed of wings*/
     if (this.y < 0 || this.y > canvas.height - this.height){
         this.directionY = this.directionY * -1;
         } /* disables "disappering" from screen, when enemy hits top/low part of screen makes new route*/
         this.x -= this.directionX;
         this.y += this.directionY; /* enables vertival movement*/
         if (this.x <0 - this.width) {
-            this.markedForDelete = true; /*HUOM VIDEOSSA "markedForDeletion" - Deletes the enemies that reach the left edge */
+            this.markedForDelete = true; /* - Deletes the enemies that reach the left edge */
         }
         this.timeSinceFlap += deltatime;
         if (this.timeSinceFlap > this.flapInterval) {
@@ -107,7 +107,7 @@ class Explosion { /* creates blueprint for ~ explosions ~*/
         this.sound.src = 'boom.wav';
         this.timeSinceLastFrame = 0;
         this.frameInterval = 200;
-        this.markedForDelete = false; //HUOM videossa markedForDeletion
+        this.markedForDelete = false;
     }
     update(deltatime){   /* this function enables right timing for effect*/
         if (this.frame === 0) {
@@ -157,9 +157,7 @@ window.addEventListener('click', function(e) {
     });
 });
 
-/* HUOM VIDEOSSA "animate"! - animation loop using deltatime: */ 
-
-
+/* animation loop using deltatime: */ 
 
 function animation(timestamp) {
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);;
@@ -181,7 +179,7 @@ function animation(timestamp) {
     drawScore();
     [...enemies, ...explosions].forEach(object => object.update(deltatime)); /*cycles trough the enemies array and triggers update */
     [...enemies, ...explosions].forEach(object => object.draw()); /* makes multiple enemies appear at the same time */
-    enemies = enemies.filter(object => !object.markedForDelete); /*HUOM VIDEOSSA "markedForDeletion" */
+    enemies = enemies.filter(object => !object.markedForDelete);
     explosions = explosions.filter(object => !object.markedForDelete);
     if (!gameOver) {
         requestAnimationFrame(animation);
