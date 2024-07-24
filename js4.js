@@ -7,8 +7,8 @@ let canvasPosition = canvas.getBoundingClientRect();
 
 class Explosion {
     constructor(x,y){
-        this.spriteWidth = 100; // divides the squares from spreadsheet
-        this.spriteHeight = 90; // divides the squares from spreadsheet
+        this.spriteWidth = 100; // divides the squares from sprite sheet
+        this.spriteHeight = 90; // divides the squares from sprite sheet
         this.width = this.spriteWidth * 0.7; //makes sure the image won't be squished, makes it scale
         this.height = this.spriteHeight * 0.7; //makes sure the image won't be squished, makes it scale
         this.x = x;
@@ -23,7 +23,7 @@ class Explosion {
     }
 
     update(){
-        if (this.frame === 0) this.sound.play();
+        if (this.frame === 0) this.sound.play(); // sound is set to be heard on first frame (when the collision animation spawns)
         this.timer++;
         if (this.timer % 10 === 0){  //slows down the animation
             this.frame++; // display the animation step by step
@@ -43,7 +43,7 @@ window.addEventListener('click', function(e){
 });
 
 function createAnimation(e){ // to avoid hard coding, added a function that is being called in the event listener
-    let positionX = e.x - canvasPosition.left;
+    let positionX = e.x - canvasPosition.left; //these determine where the animation is located
     let positionY = e.y - canvasPosition.top;
     explosions.push(new Explosion(positionX, positionY)); 
 }
@@ -53,7 +53,7 @@ function animation() {
     for (let i = 0; i < explosions.length; i++) {
         explosions[i].update();
         explosions[i].draw();
-        if (explosions[i].frame >5){
+        if (explosions[i].frame >5){ // deletes the animations after they have went through the whole loop
             explosions.splice(i, 1);
             i--;
         }
