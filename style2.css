@@ -1,0 +1,26 @@
+body {
+    background: rgb(54, 46, 46);
+}
+/* container is made for gamespeed slider.*/
+#container {
+    position: absolute;
+    width: 800px;
+    transform: translate(-50%, -50%);
+    top: 85%;
+    left: 50%;  
+    font-size: 20px;
+}
+#canvas1 {
+    position: absolute;
+    /*width: 800px;*/
+    height: 700px;
+}
+#slider {
+    width: 100%;
+    color: white;
+}
+p {
+    color: white;
+}
+
+/*https://opengameart.org/content/3-parallax-backgrounds background from here!*/
